@@ -159,6 +159,22 @@ Route::prefix('bizimhesap-products')->group(function () {
 });
 
 // ==========================================
+// DEPLOY API (GitHub Webhook)
+// ==========================================
+use App\Http\Controllers\Api\DeployController;
+
+Route::prefix('deploy')->group(function () {
+    // GitHub webhook endpoint (public, verified by signature)
+    Route::post('/webhook', [DeployController::class, 'webhook']);
+
+    // Protected endpoints
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/status', [DeployController::class, 'status']);
+        Route::post('/trigger', [DeployController::class, 'trigger']);
+    });
+});
+
+// ==========================================
 // OTHER ROUTES
 // ==========================================
 Route::webhooks('webhooks/woocommerce', 'woocommerce');
