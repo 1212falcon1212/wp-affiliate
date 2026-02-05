@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Jobs\Concerns\WithSyncLock;
 use App\Models\BizimHesapProduct;
 use App\Models\BizimHesapSyncJob;
 use App\Services\WooCommerce\WooCommerceService;
@@ -14,7 +15,7 @@ use Illuminate\Support\Facades\Log;
 
 class PushProductToWooCommerceJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, WithSyncLock;
 
     public int $timeout = 120;
     public int $tries = 3;
@@ -22,6 +23,7 @@ class PushProductToWooCommerceJob implements ShouldQueue
 
     protected int $productId;
     protected ?int $syncJobId;
+    protected ?string $lockOwner = null;
 
     public function __construct(int $productId, ?int $syncJobId = null)
     {
@@ -29,7 +31,24 @@ class PushProductToWooCommerceJob implements ShouldQueue
         $this->syncJobId = $syncJobId;
     }
 
+    protected function getLockKey(): string
+    {
+        return "sync:product:push:{$this->productId}";
+    }
+
+    protected function getLockTimeout(): int
+    {
+        return 120; // 2 minutes per product
+    }
+
     public function handle(WooCommerceService $wooCommerce): void
+    {
+        $this->withLock(function () use ($wooCommerce) {
+            $this->processProduct($wooCommerce);
+        });
+    }
+
+    protected function processProduct(WooCommerceService $wooCommerce): void
     {
         $product = BizimHesapProduct::find($this->productId);
 

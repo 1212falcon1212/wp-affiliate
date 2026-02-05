@@ -2,10 +2,21 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\MassPrunable;
 
 class BizimHesapSyncJob extends Model
 {
+    use HasFactory, MassPrunable;
+
+    /**
+     * Get the prunable model query (30 günden eski kayıtları sil)
+     */
+    public function prunable()
+    {
+        return static::where('created_at', '<=', now()->subDays(30));
+    }
     protected $table = 'bizimhesap_sync_jobs';
 
     protected $fillable = [

@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Jobs\Concerns\WithSyncLock;
 use App\Models\BizimHesapProduct;
 use App\Models\BizimHesapSyncJob;
 use App\Services\ERP\BizimHesapService;
@@ -14,19 +15,33 @@ use Illuminate\Support\Facades\Log;
 
 class FetchBizimHesapProductsJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, WithSyncLock;
 
     public int $timeout = 600; // 10 minutes
     public int $tries = 3;
 
     protected int $syncJobId;
+    protected ?string $lockOwner = null;
 
     public function __construct(int $syncJobId)
     {
         $this->syncJobId = $syncJobId;
     }
 
+    protected function getLockKey(): string
+    {
+        return 'sync:bizimhesap:fetch';
+    }
+
     public function handle(BizimHesapService $bizimHesap): void
+    {
+        // Acquire lock to prevent concurrent runs
+        $this->withLock(function () use ($bizimHesap) {
+            $this->processSync($bizimHesap);
+        });
+    }
+
+    protected function processSync(BizimHesapService $bizimHesap): void
     {
         $syncJob = BizimHesapSyncJob::find($this->syncJobId);
 
@@ -133,3 +148,4 @@ class FetchBizimHesapProductsJob implements ShouldQueue
         }
     }
 }
+

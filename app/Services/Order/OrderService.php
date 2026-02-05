@@ -261,6 +261,36 @@ class OrderService
     }
 
     /**
+     * Fetch orders from WooCommerce (for auto-pilot)
+     */
+    public function fetchFromWooCommerce(int $page = 1, int $perPage = 50): array
+    {
+        $stats = ['synced' => 0, 'total' => 0, 'errors' => 0];
+
+        try {
+            $orders = $this->wooCommerce->getOrders($page, $perPage, [
+                'after' => now()->subDays(7)->toIso8601String(), // Last 7 days
+            ]);
+
+            $stats['total'] = count($orders);
+
+            foreach ($orders as $orderDTO) {
+                try {
+                    $this->syncOrder($orderDTO->id);
+                    $stats['synced']++;
+                } catch (\Throwable $e) {
+                    Log::error("Order fetch sync error: " . $e->getMessage());
+                    $stats['errors']++;
+                }
+            }
+        } catch (\Throwable $e) {
+            Log::error("Order fetch from WooCommerce failed: " . $e->getMessage());
+        }
+
+        return $stats;
+    }
+
+    /**
      * Get order statistics
      */
     public function getStats(): array
