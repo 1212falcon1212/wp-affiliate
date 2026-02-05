@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Search, Filter, Package, Eye, Edit, RefreshCw, Loader2 } from "lucide-react";
+import { Search, Filter, Package, Eye, Edit, RefreshCw, Loader2, Plus } from "lucide-react";
 import FetchProductsButton from "@/components/catalog/FetchProductsButton";
 
 interface Product {
@@ -144,6 +144,12 @@ const Catalog = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-between items-center">
                 <h2 className="text-3xl font-bold tracking-tight">Ürünler</h2>
                 <div className="flex gap-2 w-full sm:w-auto">
+                    <Link to="/products/create">
+                        <Button>
+                            <Plus className="mr-2 h-4 w-4" />
+                            Yeni Urun
+                        </Button>
+                    </Link>
                     <FetchProductsButton />
                     <Button variant="outline" onClick={() => fetchProducts(currentPage, searchTerm)}>
                         <RefreshCw className="mr-2 h-4 w-4" />

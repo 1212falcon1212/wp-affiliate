@@ -38,7 +38,7 @@ class WooCommerceService implements CommerceInterface
 
         $rows = json_decode(json_encode($results), true);
 
-        return array_map(fn($item) => ProductDTO::fromWooCommerce($item), $rows);
+        return array_map(fn ($item) => ProductDTO::fromWooCommerce($item), $rows);
     }
 
     public function getProductsRaw(int $page = 1, int $limit = 10): array
@@ -55,9 +55,11 @@ class WooCommerceService implements CommerceInterface
     {
         try {
             $data = $this->client->get("products/{$id}");
+
             return ProductDTO::fromWooCommerce((array) $data);
         } catch (\Throwable $e) {
-            Log::error("WooCommerce getProduct error: " . $e->getMessage());
+            Log::error('WooCommerce getProduct error: '.$e->getMessage());
+
             return null;
         }
     }
@@ -66,9 +68,11 @@ class WooCommerceService implements CommerceInterface
     {
         try {
             $result = $this->client->get("products/{$id}");
+
             return json_decode(json_encode($result), true);
         } catch (\Throwable $e) {
-            Log::error("WooCommerce getProductRaw error: " . $e->getMessage());
+            Log::error('WooCommerce getProductRaw error: '.$e->getMessage());
+
             return null;
         }
     }
@@ -89,7 +93,8 @@ class WooCommerceService implements CommerceInterface
 
             return $products[0];
         } catch (\Throwable $e) {
-            Log::error("WooCommerce getProductBySku error: " . $e->getMessage());
+            Log::error('WooCommerce getProductBySku error: '.$e->getMessage());
+
             return null;
         }
     }
@@ -102,9 +107,11 @@ class WooCommerceService implements CommerceInterface
     {
         try {
             $result = $this->client->post('products', $data);
+
             return json_decode(json_encode($result), true);
         } catch (\Throwable $e) {
-            Log::error("WooCommerce createProduct error: " . $e->getMessage());
+            Log::error('WooCommerce createProduct error: '.$e->getMessage());
+
             return null;
         }
     }
@@ -113,9 +120,11 @@ class WooCommerceService implements CommerceInterface
     {
         try {
             $result = $this->client->put("products/{$id}", $data);
+
             return json_decode(json_encode($result), true);
         } catch (\Throwable $e) {
-            Log::error("WooCommerce updateProduct error: " . $e->getMessage());
+            Log::error('WooCommerce updateProduct error: '.$e->getMessage());
+
             return null;
         }
     }
@@ -124,9 +133,11 @@ class WooCommerceService implements CommerceInterface
     {
         try {
             $this->client->delete("products/{$id}", ['force' => $force]);
+
             return true;
         } catch (\Throwable $e) {
-            Log::error("WooCommerce deleteProduct error: " . $e->getMessage());
+            Log::error('WooCommerce deleteProduct error: '.$e->getMessage());
+
             return false;
         }
     }
@@ -135,11 +146,13 @@ class WooCommerceService implements CommerceInterface
     {
         try {
             $response = $this->client->post('products/batch', [
-                'update' => $data
+                'update' => $data,
             ]);
+
             return json_decode(json_encode($response), true) ?? [];
         } catch (\Throwable $e) {
-            Log::error("WooCommerce batch update error: " . $e->getMessage());
+            Log::error('WooCommerce batch update error: '.$e->getMessage());
+
             return [];
         }
     }
@@ -154,9 +167,11 @@ class WooCommerceService implements CommerceInterface
             $results = $this->client->get("products/{$productId}/variations", [
                 'per_page' => 100,
             ]);
+
             return json_decode(json_encode($results), true) ?? [];
         } catch (\Throwable $e) {
-            Log::error("WooCommerce getVariations error for product {$productId}: " . $e->getMessage());
+            Log::error("WooCommerce getVariations error for product {$productId}: ".$e->getMessage());
+
             return [];
         }
     }
@@ -165,9 +180,11 @@ class WooCommerceService implements CommerceInterface
     {
         try {
             $result = $this->client->get("products/{$productId}/variations/{$variationId}");
+
             return json_decode(json_encode($result), true);
         } catch (\Throwable $e) {
-            Log::error("WooCommerce getVariation error: " . $e->getMessage());
+            Log::error('WooCommerce getVariation error: '.$e->getMessage());
+
             return null;
         }
     }
@@ -176,9 +193,11 @@ class WooCommerceService implements CommerceInterface
     {
         try {
             $result = $this->client->post("products/{$productId}/variations", $data);
+
             return json_decode(json_encode($result), true);
         } catch (\Throwable $e) {
-            Log::error("WooCommerce createVariation error: " . $e->getMessage());
+            Log::error('WooCommerce createVariation error: '.$e->getMessage());
+
             return null;
         }
     }
@@ -187,9 +206,11 @@ class WooCommerceService implements CommerceInterface
     {
         try {
             $result = $this->client->put("products/{$productId}/variations/{$variationId}", $data);
+
             return json_decode(json_encode($result), true);
         } catch (\Throwable $e) {
-            Log::error("WooCommerce updateVariation error: " . $e->getMessage());
+            Log::error('WooCommerce updateVariation error: '.$e->getMessage());
+
             return null;
         }
     }
@@ -198,9 +219,11 @@ class WooCommerceService implements CommerceInterface
     {
         try {
             $this->client->delete("products/{$productId}/variations/{$variationId}", ['force' => $force]);
+
             return true;
         } catch (\Throwable $e) {
-            Log::error("WooCommerce deleteVariation error: " . $e->getMessage());
+            Log::error('WooCommerce deleteVariation error: '.$e->getMessage());
+
             return false;
         }
     }
@@ -209,9 +232,11 @@ class WooCommerceService implements CommerceInterface
     {
         try {
             $response = $this->client->post("products/{$productId}/variations/batch", $data);
+
             return json_decode(json_encode($response), true) ?? [];
         } catch (\Throwable $e) {
-            Log::error("WooCommerce variations batch error: " . $e->getMessage());
+            Log::error('WooCommerce variations batch error: '.$e->getMessage());
+
             return [];
         }
     }
@@ -224,9 +249,11 @@ class WooCommerceService implements CommerceInterface
     {
         try {
             $results = $this->client->get('products/attributes');
+
             return json_decode(json_encode($results), true) ?? [];
         } catch (\Throwable $e) {
-            Log::error("WooCommerce getAttributes error: " . $e->getMessage());
+            Log::error('WooCommerce getAttributes error: '.$e->getMessage());
+
             return [];
         }
     }
@@ -235,9 +262,11 @@ class WooCommerceService implements CommerceInterface
     {
         try {
             $result = $this->client->get("products/attributes/{$id}");
+
             return json_decode(json_encode($result), true);
         } catch (\Throwable $e) {
-            Log::error("WooCommerce getAttribute error: " . $e->getMessage());
+            Log::error('WooCommerce getAttribute error: '.$e->getMessage());
+
             return null;
         }
     }
@@ -246,9 +275,11 @@ class WooCommerceService implements CommerceInterface
     {
         try {
             $result = $this->client->post('products/attributes', $data);
+
             return json_decode(json_encode($result), true);
         } catch (\Throwable $e) {
-            Log::error("WooCommerce createAttribute error: " . $e->getMessage());
+            Log::error('WooCommerce createAttribute error: '.$e->getMessage());
+
             return null;
         }
     }
@@ -257,9 +288,11 @@ class WooCommerceService implements CommerceInterface
     {
         try {
             $result = $this->client->put("products/attributes/{$id}", $data);
+
             return json_decode(json_encode($result), true);
         } catch (\Throwable $e) {
-            Log::error("WooCommerce updateAttribute error: " . $e->getMessage());
+            Log::error('WooCommerce updateAttribute error: '.$e->getMessage());
+
             return null;
         }
     }
@@ -268,9 +301,11 @@ class WooCommerceService implements CommerceInterface
     {
         try {
             $this->client->delete("products/attributes/{$id}");
+
             return true;
         } catch (\Throwable $e) {
-            Log::error("WooCommerce deleteAttribute error: " . $e->getMessage());
+            Log::error('WooCommerce deleteAttribute error: '.$e->getMessage());
+
             return false;
         }
     }
@@ -285,9 +320,11 @@ class WooCommerceService implements CommerceInterface
             $results = $this->client->get("products/attributes/{$attributeId}/terms", [
                 'per_page' => 100,
             ]);
+
             return json_decode(json_encode($results), true) ?? [];
         } catch (\Throwable $e) {
-            Log::error("WooCommerce getAttributeTerms error: " . $e->getMessage());
+            Log::error('WooCommerce getAttributeTerms error: '.$e->getMessage());
+
             return [];
         }
     }
@@ -296,9 +333,11 @@ class WooCommerceService implements CommerceInterface
     {
         try {
             $result = $this->client->post("products/attributes/{$attributeId}/terms", $data);
+
             return json_decode(json_encode($result), true);
         } catch (\Throwable $e) {
-            Log::error("WooCommerce createAttributeTerm error: " . $e->getMessage());
+            Log::error('WooCommerce createAttributeTerm error: '.$e->getMessage());
+
             return null;
         }
     }
@@ -307,9 +346,11 @@ class WooCommerceService implements CommerceInterface
     {
         try {
             $result = $this->client->put("products/attributes/{$attributeId}/terms/{$termId}", $data);
+
             return json_decode(json_encode($result), true);
         } catch (\Throwable $e) {
-            Log::error("WooCommerce updateAttributeTerm error: " . $e->getMessage());
+            Log::error('WooCommerce updateAttributeTerm error: '.$e->getMessage());
+
             return null;
         }
     }
@@ -318,9 +359,11 @@ class WooCommerceService implements CommerceInterface
     {
         try {
             $this->client->delete("products/attributes/{$attributeId}/terms/{$termId}");
+
             return true;
         } catch (\Throwable $e) {
-            Log::error("WooCommerce deleteAttributeTerm error: " . $e->getMessage());
+            Log::error('WooCommerce deleteAttributeTerm error: '.$e->getMessage());
+
             return false;
         }
     }
@@ -336,9 +379,11 @@ class WooCommerceService implements CommerceInterface
                 'page' => $page,
                 'per_page' => $limit,
             ]);
+
             return json_decode(json_encode($results), true) ?? [];
         } catch (\Throwable $e) {
-            Log::error("WooCommerce getCategories error: " . $e->getMessage());
+            Log::error('WooCommerce getCategories error: '.$e->getMessage());
+
             return [];
         }
     }
@@ -347,9 +392,11 @@ class WooCommerceService implements CommerceInterface
     {
         try {
             $result = $this->client->post('products/categories', $data);
+
             return json_decode(json_encode($result), true);
         } catch (\Throwable $e) {
-            Log::error("WooCommerce createCategory error: " . $e->getMessage());
+            Log::error('WooCommerce createCategory error: '.$e->getMessage());
+
             return null;
         }
     }
@@ -358,9 +405,44 @@ class WooCommerceService implements CommerceInterface
     {
         try {
             $result = $this->client->put("products/categories/{$id}", $data);
+
             return json_decode(json_encode($result), true);
         } catch (\Throwable $e) {
-            Log::error("WooCommerce updateCategory error: " . $e->getMessage());
+            Log::error('WooCommerce updateCategory error: '.$e->getMessage());
+
+            return null;
+        }
+    }
+
+    // ==========================================
+    // PRODUCT TAGS
+    // ==========================================
+
+    public function getTags(int $page = 1, int $limit = 100): array
+    {
+        try {
+            $results = $this->client->get('products/tags', [
+                'page' => $page,
+                'per_page' => $limit,
+            ]);
+
+            return json_decode(json_encode($results), true) ?? [];
+        } catch (\Throwable $e) {
+            Log::error('WooCommerce getTags error: '.$e->getMessage());
+
+            return [];
+        }
+    }
+
+    public function createTag(array $data): ?array
+    {
+        try {
+            $result = $this->client->post('products/tags', $data);
+
+            return json_decode(json_encode($result), true);
+        } catch (\Throwable $e) {
+            Log::error('WooCommerce createTag error: '.$e->getMessage());
+
             return null;
         }
     }
@@ -380,16 +462,18 @@ class WooCommerceService implements CommerceInterface
 
         $rows = json_decode(json_encode($results), true);
 
-        return array_map(fn($item) => OrderDTO::fromWooCommerce($item), $rows);
+        return array_map(fn ($item) => OrderDTO::fromWooCommerce($item), $rows);
     }
 
     public function getOrder(string $id): ?OrderDTO
     {
         try {
             $data = $this->client->get("orders/{$id}");
+
             return OrderDTO::fromWooCommerce((array) $data);
         } catch (\Throwable $e) {
-            Log::error("WooCommerce getOrder error: " . $e->getMessage());
+            Log::error('WooCommerce getOrder error: '.$e->getMessage());
+
             return null;
         }
     }
@@ -398,9 +482,11 @@ class WooCommerceService implements CommerceInterface
     {
         try {
             $data = $this->client->get("orders/{$id}");
+
             return json_decode(json_encode($data), true);
         } catch (\Throwable $e) {
-            Log::error("WooCommerce getOrderRaw error: " . $e->getMessage());
+            Log::error('WooCommerce getOrderRaw error: '.$e->getMessage());
+
             return null;
         }
     }
@@ -409,9 +495,11 @@ class WooCommerceService implements CommerceInterface
     {
         try {
             $this->client->put("orders/{$id}", ['status' => $status]);
+
             return true;
         } catch (\Throwable $e) {
-            Log::error("WooCommerce updateOrderStatus error: " . $e->getMessage());
+            Log::error('WooCommerce updateOrderStatus error: '.$e->getMessage());
+
             return false;
         }
     }
@@ -426,6 +514,7 @@ class WooCommerceService implements CommerceInterface
 
         if (empty($products)) {
             Log::warning("WooCommerce syncStock: Product not found for SKU: {$sku}");
+
             return false;
         }
 
@@ -437,9 +526,11 @@ class WooCommerceService implements CommerceInterface
                 'manage_stock' => true,
                 'stock_quantity' => $quantity,
             ]);
+
             return true;
         } catch (\Throwable $e) {
-            Log::error("WooCommerce syncStock error: " . $e->getMessage());
+            Log::error('WooCommerce syncStock error: '.$e->getMessage());
+
             return false;
         }
     }
@@ -474,16 +565,18 @@ class WooCommerceService implements CommerceInterface
             'per_page' => $limit,
         ]);
 
-        return array_map(fn($item) => (array) $item, $results);
+        return array_map(fn ($item) => (array) $item, $results);
     }
 
     public function getCoupon(int $id): ?array
     {
         try {
             $data = $this->client->get("coupons/{$id}");
+
             return (array) $data;
         } catch (\Throwable $e) {
-            Log::error("WooCommerce getCoupon error: " . $e->getMessage());
+            Log::error('WooCommerce getCoupon error: '.$e->getMessage());
+
             return null;
         }
     }
@@ -492,9 +585,11 @@ class WooCommerceService implements CommerceInterface
     {
         try {
             $results = (array) $this->client->get('coupons', ['code' => $code]);
-            return !empty($results) ? (array) $results[0] : null;
+
+            return ! empty($results) ? (array) $results[0] : null;
         } catch (\Throwable $e) {
-            Log::error("WooCommerce getCouponByCode error: " . $e->getMessage());
+            Log::error('WooCommerce getCouponByCode error: '.$e->getMessage());
+
             return null;
         }
     }
@@ -503,9 +598,10 @@ class WooCommerceService implements CommerceInterface
     {
         try {
             $result = $this->client->post('coupons', $data);
+
             return (array) $result;
         } catch (\Throwable $e) {
-            Log::error("WooCommerce createCoupon error: " . $e->getMessage());
+            Log::error('WooCommerce createCoupon error: '.$e->getMessage());
             throw $e;
         }
     }
@@ -514,9 +610,11 @@ class WooCommerceService implements CommerceInterface
     {
         try {
             $result = $this->client->put("coupons/{$id}", $data);
+
             return (array) $result;
         } catch (\Throwable $e) {
-            Log::error("WooCommerce updateCoupon error: " . $e->getMessage());
+            Log::error('WooCommerce updateCoupon error: '.$e->getMessage());
+
             return null;
         }
     }
@@ -525,9 +623,11 @@ class WooCommerceService implements CommerceInterface
     {
         try {
             $this->client->delete("coupons/{$id}", ['force' => $force]);
+
             return true;
         } catch (\Throwable $e) {
-            Log::error("WooCommerce deleteCoupon error: " . $e->getMessage());
+            Log::error('WooCommerce deleteCoupon error: '.$e->getMessage());
+
             return false;
         }
     }

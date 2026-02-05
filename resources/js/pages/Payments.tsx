@@ -28,8 +28,16 @@ import {
     DollarSign,
     Banknote,
     Play,
-    User
+    User,
+    Landmark,
+    Copy
 } from "lucide-react";
+
+interface BankDetails {
+    iban?: string;
+    account_holder?: string;
+    bank_name?: string;
+}
 
 interface Payment {
     id: number;
@@ -39,6 +47,7 @@ interface Payment {
     amount: number;
     currency: string;
     payment_method: string;
+    payment_details: BankDetails | null;
     status: string;
     provider_transaction_id: string | null;
     processed_at: string | null;
@@ -48,6 +57,7 @@ interface Payment {
         id: number;
         name: string;
         email: string;
+        payment_details?: BankDetails | null;
     };
 }
 
@@ -64,7 +74,13 @@ interface Stats {
 }
 
 interface AffiliateInfo {
-    affiliate: any;
+    affiliate: {
+        id: number;
+        name: string;
+        email: string;
+        payment_method: string;
+        payment_details: BankDetails | null;
+    };
     pending_amount: number;
     pending_count: number;
     referrals: any[];
@@ -269,6 +285,65 @@ const Payments = () => {
         );
     };
 
+    const copyToClipboard = (text: string) => {
+        navigator.clipboard.writeText(text.replace(/\s/g, '')).then(() => {
+            alert('IBAN kopyalandi!');
+        });
+    };
+
+    const renderBankDetails = (details: BankDetails | null | undefined, showTitle: boolean = true) => {
+        if (!details || (!details.iban && !details.bank_name && !details.account_holder)) {
+            return (
+                <div className="p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+                    <p className="text-sm text-yellow-600">
+                        Banka bilgileri tanimlanmamis. Affiliate detay sayfasindan ekleyebilirsiniz.
+                    </p>
+                </div>
+            );
+        }
+
+        return (
+            <div className="p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg space-y-3">
+                {showTitle && (
+                    <div className="flex items-center gap-2 text-blue-600 font-medium">
+                        <Landmark className="h-4 w-4" />
+                        <span>Banka Bilgileri</span>
+                    </div>
+                )}
+                {details.bank_name && (
+                    <div>
+                        <p className="text-xs text-muted-foreground">Banka</p>
+                        <p className="font-medium">{details.bank_name}</p>
+                    </div>
+                )}
+                {details.account_holder && (
+                    <div>
+                        <p className="text-xs text-muted-foreground">Hesap Sahibi</p>
+                        <p className="font-medium">{details.account_holder}</p>
+                    </div>
+                )}
+                {details.iban && (
+                    <div>
+                        <p className="text-xs text-muted-foreground">IBAN</p>
+                        <div className="flex items-center gap-2">
+                            <p className="font-mono text-sm bg-white/50 dark:bg-black/20 px-2 py-1 rounded">
+                                {details.iban}
+                            </p>
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-7 px-2"
+                                onClick={() => copyToClipboard(details.iban!)}
+                            >
+                                <Copy className="h-3 w-3" />
+                            </Button>
+                        </div>
+                    </div>
+                )}
+            </div>
+        );
+    };
+
     return (
         <div className="space-y-6">
             {/* Stats Cards */}
@@ -361,29 +436,55 @@ const Payments = () => {
                     <CardContent>
                         <div className="space-y-2">
                             {stats.pending_by_affiliate.map((affiliate: any) => (
-                                <div key={affiliate.id} className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
-                                    <div className="flex items-center gap-3">
-                                        <User className="h-5 w-5 text-muted-foreground" />
-                                        <div>
-                                            <p className="font-medium">{affiliate.name}</p>
-                                            <p className="text-sm text-muted-foreground">
-                                                {affiliate.pending_count} referral - {paymentMethodLabels[affiliate.payment_method] || affiliate.payment_method}
-                                            </p>
+                                <div key={affiliate.id} className="p-3 bg-muted/50 rounded-lg space-y-2">
+                                    <div className="flex justify-between items-center">
+                                        <div className="flex items-center gap-3">
+                                            <User className="h-5 w-5 text-muted-foreground" />
+                                            <div>
+                                                <p className="font-medium">{affiliate.name}</p>
+                                                <p className="text-sm text-muted-foreground">
+                                                    {affiliate.pending_count} referral - {paymentMethodLabels[affiliate.payment_method] || affiliate.payment_method}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="font-bold text-yellow-600">{formatCurrency(affiliate.pending_amount || 0)}</p>
+                                            <Button
+                                                size="sm"
+                                                variant="outline"
+                                                onClick={() => {
+                                                    handleSelectAffiliate(affiliate.id);
+                                                    setShowCreateDialog(true);
+                                                }}
+                                            >
+                                                Ode
+                                            </Button>
                                         </div>
                                     </div>
-                                    <div className="text-right">
-                                        <p className="font-bold text-yellow-600">{formatCurrency(affiliate.pending_amount || 0)}</p>
-                                        <Button
-                                            size="sm"
-                                            variant="outline"
-                                            onClick={() => {
-                                                handleSelectAffiliate(affiliate.id);
-                                                setShowCreateDialog(true);
-                                            }}
-                                        >
-                                            Ode
-                                        </Button>
-                                    </div>
+                                    {/* Quick Bank Info */}
+                                    {affiliate.payment_details?.iban && (
+                                        <div className="flex items-center gap-2 text-xs bg-blue-500/10 px-2 py-1 rounded">
+                                            <Landmark className="h-3 w-3 text-blue-600" />
+                                            <span className="text-muted-foreground">{affiliate.payment_details.bank_name || 'Banka'}:</span>
+                                            <span className="font-mono">{affiliate.payment_details.iban}</span>
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                className="h-5 w-5 p-0"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    copyToClipboard(affiliate.payment_details.iban);
+                                                }}
+                                            >
+                                                <Copy className="h-3 w-3" />
+                                            </Button>
+                                        </div>
+                                    )}
+                                    {!affiliate.payment_details?.iban && (
+                                        <p className="text-xs text-yellow-600">
+                                            Banka bilgisi tanimlanmamis
+                                        </p>
+                                    )}
                                 </div>
                             ))}
                         </div>
@@ -487,6 +588,9 @@ const Payments = () => {
                                     <p className="font-medium">{selectedAffiliate.affiliate.name}</p>
                                     <p className="text-sm text-muted-foreground">{selectedAffiliate.affiliate.email}</p>
                                 </div>
+
+                                {/* Bank Details */}
+                                {renderBankDetails(selectedAffiliate.affiliate.payment_details)}
 
                                 <div className="space-y-2">
                                     <Label>Odeme Yontemi</Label>
@@ -610,6 +714,11 @@ const Payments = () => {
                                         {formatCurrency(completingPayment.amount)}
                                     </p>
                                 </div>
+
+                                {/* Bank Details */}
+                                {renderBankDetails(
+                                    completingPayment.payment_details || completingPayment.affiliate?.payment_details
+                                )}
 
                                 <div className="space-y-2">
                                     <Label>Islem/Referans No (opsiyonel)</Label>

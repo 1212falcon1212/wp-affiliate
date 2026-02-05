@@ -1,0 +1,750 @@
+{
+  "Güneş Ürünleri": [
+    {
+      "name": "Anti-age Güneş Koruyucuları",
+      "path": "/anti-age-gunes-koruyuculari",
+      "product_count": 58
+    },
+    {
+      "name": "Bebek ve Çocuk Güneş Koruyucuları",
+      "path": "/bebek-ve-cocuk-gunes-koruyuculari-1",
+      "product_count": 57
+    },
+    {
+      "name": "Bronzlaştırıcılar",
+      "path": "/bronzlastiricilar",
+      "product_count": 19
+    },
+    {
+      "name": "Compact ve Stick Güneş Koruyucuları",
+      "path": "/compact-ve-stick-gunes-koruyuculari",
+      "product_count": 21
+    },
+    {
+      "name": "Güneş Koruyucular",
+      "path": "/gunes-koruyucular",
+      "product_count": 339
+    },
+    {
+      "name": "Güneş Sonrası",
+      "path": "/gunes-sonrasi",
+      "product_count": 17
+    },
+    {
+      "name": "Kofreler ve Setler",
+      "path": "/kofreler-ve-setler",
+      "product_count": 3
+    },
+    {
+      "name": "Mineral Güneş Koruyucular",
+      "path": "/mineral-gunes-koruyucular",
+      "product_count": 9
+    },
+    {
+      "name": "Mineral Güneş Koruyucuları",
+      "path": "/mineral-gunes-koruyuculari",
+      "product_count": 16
+    },
+    {
+      "name": "Vücut Güneş Koruyucuları",
+      "path": "/vucut-gunes-koruyuculari",
+      "product_count": 38
+    }
+  ],
+  "Cilt Bakımı": [
+    {
+      "name": "Akne ve Sivilce Karşıtı Ürünler",
+      "path": "/akne-ve-sivilce-karsiti-urunler",
+      "product_count": 129
+    },
+    {
+      "name": "Anti-Aging",
+      "path": "/anti-aging-1",
+      "product_count": 669
+    },
+    {
+      "name": "BB-CC Kremler",
+      "path": "/bb-cc-kremler",
+      "product_count": 27
+    },
+    {
+      "name": "Bebek Bakım Ürünleri",
+      "path": "/bebek-bakim-urunleri",
+      "product_count": 83
+    },
+    {
+      "name": "Cica Kremler",
+      "path": "/cica-kremler",
+      "product_count": 65
+    },
+    {
+      "name": "Cilt Bakım Serumları",
+      "path": "/cilt-bakim-serumlari",
+      "product_count": 326
+    },
+    {
+      "name": "Cilt Bakım Yağları",
+      "path": "/cilt-bakim-yaglari",
+      "product_count": 55
+    },
+    {
+      "name": "Cilt Temizleme Ürünleri",
+      "path": "/cilt-temizleme-urunleri",
+      "product_count": 384
+    },
+    {
+      "name": "Cilt Yatıştırıcı Ürünler",
+      "path": "/cilt-yatistirici-urunler",
+      "product_count": 205
+    },
+    {
+      "name": "Doğal-Organik Cilt Bakım Ürünleri",
+      "path": "/dogal-organik-cilt-bakim-urunleri",
+      "product_count": 52
+    },
+    {
+      "name": "Dudak Bakımı",
+      "path": "/dudak-bakimi",
+      "product_count": 89
+    },
+    {
+      "name": "El Bakım Ürünleri",
+      "path": "/el-bakim-urunleri",
+      "product_count": 27
+    },
+    {
+      "name": "Göz Çevresi ve Bakım Kremleri",
+      "path": "/goz-cevresi-ve-bakim-kremleri",
+      "product_count": 148
+    },
+    {
+      "name": "Gözenek Sıkılaştırıcılar",
+      "path": "/gozenek-sikilastiricilar",
+      "product_count": 76
+    },
+    {
+      "name": "Güneş Koruyucular",
+      "path": "/gunes-koruyucular-1",
+      "product_count": 154
+    },
+    {
+      "name": "Hassas Cilt Bakım Ürünleri",
+      "path": "/hassas-cilt-bakim-urunleri",
+      "product_count": 215
+    },
+    {
+      "name": "Hassas Ciltler İçin Güneş Kremi",
+      "path": "/hassas-ciltler-icin-gunes-kremi",
+      "product_count": 117
+    },
+    {
+      "name": "Hassas Ciltler İçin Nemlendirici",
+      "path": "/hassas-ciltler-icin-nemlendirici",
+      "product_count": 259
+    },
+    {
+      "name": "Karma Ciltler İçin Güneş Kremi",
+      "path": "/karma-ciltler-icin-gunes-kremi",
+      "product_count": 107
+    },
+    {
+      "name": "Karma Ciltler İçin Nemlendirici",
+      "path": "/karma-ciltler-icin-nemlendirici",
+      "product_count": 195
+    },
+    {
+      "name": "Kaş ve Kirpik Bakımı",
+      "path": "/kas-ve-kirpik-bakimi",
+      "product_count": 8
+    },
+    {
+      "name": "Kuru Ciltler İçin Güneş Kremi",
+      "path": "/kuru-ciltler-icin-gunes-kremi",
+      "product_count": 111
+    },
+    {
+      "name": "Kuru Ciltler İçin Nemlendirici",
+      "path": "/kuru-ciltler-icin-nemlendirici",
+      "product_count": 280
+    },
+    {
+      "name": "Leke Gidericiler",
+      "path": "/leke-gidericiler",
+      "product_count": 161
+    },
+    {
+      "name": "Matlaştırıcı Ürünler",
+      "path": "/matlastirici-urunler",
+      "product_count": 37
+    },
+    {
+      "name": "Peeling ve Maskeler",
+      "path": "/peeling-ve-maskeler",
+      "product_count": 127
+    },
+    {
+      "name": "Su Bazlı Nemlendiriciler",
+      "path": "/su-bazli-nemlendiriciler",
+      "product_count": 24
+    },
+    {
+      "name": "Tonikler ve Losyonlar",
+      "path": "/tonikler-ve-losyonlar",
+      "product_count": 141
+    },
+    {
+      "name": "Yağlı Cilt Bakımı",
+      "path": "/yagli-cilt-bakimi",
+      "product_count": 220
+    },
+    {
+      "name": "Yağlı Ciltler İçin Güneş Kremi",
+      "path": "/yagli-ciltler-icin-gunes-kremi",
+      "product_count": 90
+    },
+    {
+      "name": "Yağlı Ciltler İçin Nemlendirici",
+      "path": "/yagli-ciltler-icin-nemlendirici",
+      "product_count": 148
+    },
+    {
+      "name": "Yağlı Ciltler İçin Tonik",
+      "path": "/yagli-ciltler-icin-tonik",
+      "product_count": 22
+    },
+    {
+      "name": "Yağlı Vücut Bakım",
+      "path": "/yagli-vucut-bakim",
+      "product_count": 40
+    },
+    {
+      "name": "Yüz Bakımı",
+      "path": "/yuz-bakimi",
+      "product_count": 17
+    },
+    {
+      "name": "Yüz Nemlendiricileri",
+      "path": "/yuz-nemlendiricileri",
+      "product_count": 435
+    }
+  ],
+  "Saç Bakımı": [
+    {
+      "name": "Doğal Saç Bakım Ürünleri",
+      "path": "/dogal-sac-bakim-urunleri",
+      "product_count": 117
+    },
+    {
+      "name": "Kepek Önleyici Ürünler",
+      "path": "/kepek-onleyici-urunler",
+      "product_count": 46
+    },
+    {
+      "name": "Saç Bakım Maskeleri",
+      "path": "/sac-bakim-maskeleri",
+      "product_count": 43
+    },
+    {
+      "name": "Saç Bakım Yağları",
+      "path": "/sac-bakim-yaglari",
+      "product_count": 22
+    },
+    {
+      "name": "Saç Boyaları",
+      "path": "/sac-boyalari",
+      "product_count": 58
+    },
+    {
+      "name": "Saç Dökülme Önleyici",
+      "path": "/sac-dokulme-onleyici",
+      "product_count": 161
+    },
+    {
+      "name": "Saç Kremleri",
+      "path": "/sac-kremleri",
+      "product_count": 78
+    },
+    {
+      "name": "Saç Serumları",
+      "path": "/sac-serumlari",
+      "product_count": 22
+    },
+    {
+      "name": "Saç Spreyleri",
+      "path": "/sac-spreyleri",
+      "product_count": 13
+    },
+    {
+      "name": "Saç Şekillendiriciler",
+      "path": "/sac-sekillendiriciler",
+      "product_count": 17
+    },
+    {
+      "name": "Tarak ve Fırçalar",
+      "path": "/tarak-ve-fircalar",
+      "product_count": 21
+    },
+    {
+      "name": "Şampuanlar",
+      "path": "/sampuanlar",
+      "product_count": 173
+    }
+  ],
+  "Vücut Bakım": [
+    {
+      "name": "Banyo ve Duş Ürünleri",
+      "path": "/banyo-ve-dus-urunleri",
+      "product_count": 75
+    },
+    {
+      "name": "Bebek Banyo Ürünleri",
+      "path": "/bebek-banyo-urunleri",
+      "product_count": 35
+    },
+    {
+      "name": "Deodorant ve Roll-On",
+      "path": "/deodorant-ve-roll-on",
+      "product_count": 150
+    },
+    {
+      "name": "Doğal-Organik Vücut Bakım Ürünleri",
+      "path": "/dogal-organik-vucut-bakim-urunleri",
+      "product_count": 33
+    },
+    {
+      "name": "El ve Ayak - Tırnak Bakımı",
+      "path": "/el-ve-ayak-tirnak-bakimi",
+      "product_count": 96
+    },
+    {
+      "name": "Güneş Korumaları",
+      "path": "/gunes-korumalari",
+      "product_count": 42
+    },
+    {
+      "name": "Hijyenik Kadın Ürünleri",
+      "path": "/hijyenik-kadin-urunleri",
+      "product_count": 8
+    },
+    {
+      "name": "Leke Açıcılar",
+      "path": "/leke-acicilar",
+      "product_count": 2
+    },
+    {
+      "name": "Masaj Yağları",
+      "path": "/masaj-yaglari",
+      "product_count": 10
+    },
+    {
+      "name": "Selülit Bakımı",
+      "path": "/selulit-bakimi",
+      "product_count": 4
+    },
+    {
+      "name": "Sıkılaştırıcı ve İncelticiler",
+      "path": "/sikilastirici-ve-incelticiler",
+      "product_count": 4
+    },
+    {
+      "name": "Terleme Önleyiciler",
+      "path": "/terleme-onleyiciler",
+      "product_count": 94
+    },
+    {
+      "name": "Tüy Gidericiler",
+      "path": "/tuy-gidericiler",
+      "product_count": 12
+    },
+    {
+      "name": "Vücut Nemlendiricileri",
+      "path": "/vucut-nemlendiricileri",
+      "product_count": 148
+    },
+    {
+      "name": "Vücut Peeling ve Cilt Yenileyicileri",
+      "path": "/vucut-peeling-ve-cilt-yenileyicileri",
+      "product_count": 24
+    },
+    {
+      "name": "Vücut Temizleyiciler",
+      "path": "/vucut-temizleyiciler",
+      "product_count": 85
+    },
+    {
+      "name": "Çatlak Gidericiler",
+      "path": "/catlak-gidericiler",
+      "product_count": 13
+    }
+  ],
+  "Anne Bebek": [
+    {
+      "name": "Anne Bebek Setleri",
+      "path": "/anne-bebek-setleri",
+      "product_count": 18
+    },
+    {
+      "name": "Anne Besin Takviyesi",
+      "path": "/anne-besin-takviyesi",
+      "product_count": 41
+    },
+    {
+      "name": "Anne Çatlak Ürünleri",
+      "path": "/anne-catlak-urunleri",
+      "product_count": 13
+    },
+    {
+      "name": "Bebek Bakım Ürünleri",
+      "path": "/bebek-bakim-urunleri-2",
+      "product_count": 289
+    },
+    {
+      "name": "Bebek Islak Mendilleri",
+      "path": "/bebek-islak-mendilleri",
+      "product_count": 10
+    },
+    {
+      "name": "Bebek Kolonyaları ve Parfümleri",
+      "path": "/bebek-kolonyalari-ve-parfumleri",
+      "product_count": 8
+    },
+    {
+      "name": "Bebek Kremleri",
+      "path": "/bebek-kremleri",
+      "product_count": 134
+    },
+    {
+      "name": "Bebek Mamaları",
+      "path": "/bebek-mamalari",
+      "product_count": 85
+    },
+    {
+      "name": "Bebek Sabunları",
+      "path": "/bebek-sabunlari",
+      "product_count": 28
+    },
+    {
+      "name": "Bebek Vücut Losyonu",
+      "path": "/bebek-vucut-losyonu",
+      "product_count": 24
+    },
+    {
+      "name": "Bebek Yağları",
+      "path": "/bebek-yaglari",
+      "product_count": 25
+    },
+    {
+      "name": "Bebek ve Çocuk Güneş Koruyucuları",
+      "path": "/bebek-ve-cocuk-gunes-koruyuculari",
+      "product_count": 49
+    },
+    {
+      "name": "Bebek ve Çocuk Çayları",
+      "path": "/bebek-ve-cocuk-caylari",
+      "product_count": 2
+    },
+    {
+      "name": "Bebek Şampuan-Duş Jeli",
+      "path": "/bebek-sampuan-dus-jeli",
+      "product_count": 73
+    },
+    {
+      "name": "Bebek Şampuanları",
+      "path": "/bebek-sampuanlari",
+      "product_count": 70
+    },
+    {
+      "name": "Biberon",
+      "path": "/biberon",
+      "product_count": 25
+    },
+    {
+      "name": "Doğal-Organik Bebek Ürünleri",
+      "path": "/dogal-organik-bebek-urunleri",
+      "product_count": 74
+    },
+    {
+      "name": "Emzik",
+      "path": "/emzik",
+      "product_count": 21
+    },
+    {
+      "name": "Emzirme Ürünleri",
+      "path": "/emzirme-urunleri",
+      "product_count": 71
+    },
+    {
+      "name": "Gaz Gidericiler",
+      "path": "/gaz-gidericiler",
+      "product_count": 3
+    },
+    {
+      "name": "Konak Önleyiciler",
+      "path": "/konak-onleyiciler",
+      "product_count": 2
+    },
+    {
+      "name": "Temizleme Ürünleri",
+      "path": "/temizleme-urunleri",
+      "product_count": 111
+    },
+    {
+      "name": "Yüz ve Vücut Nemlendiricileri",
+      "path": "/yuz-ve-vucut-nemlendiricileri",
+      "product_count": 72
+    },
+    {
+      "name": "Özel Bakım",
+      "path": "/ozel-bakim",
+      "product_count": 284
+    }
+  ],
+  "Makyaj": [
+    {
+      "name": "Doğal Organik Makyaj Ürünleri",
+      "path": "/dogal-organik-makyaj-urunleri",
+      "product_count": 1
+    },
+    {
+      "name": "Dudak Makyajı",
+      "path": "/dudak-makyaji",
+      "product_count": 108
+    },
+    {
+      "name": "Göz Makyajı",
+      "path": "/goz-makyaji",
+      "product_count": 98
+    },
+    {
+      "name": "Makyaj Aksesuarları",
+      "path": "/makyaj-aksesuarlari",
+      "product_count": 27
+    },
+    {
+      "name": "Makyaj Fırçaları",
+      "path": "/makyaj-fircalari",
+      "product_count": 16
+    },
+    {
+      "name": "Makyaj Temizleme",
+      "path": "/makyaj-temizleme",
+      "product_count": 148
+    },
+    {
+      "name": "Ten Makyajı",
+      "path": "/ten-makyaji",
+      "product_count": 147
+    }
+  ],
+  "Vitaminler": [
+    {
+      "name": "A Vitamini",
+      "path": "/a-vitamini",
+      "product_count": 16
+    },
+    {
+      "name": "B Vitamini",
+      "path": "/b-vitamini",
+      "product_count": 120
+    },
+    {
+      "name": "Bağışıklık Sistemi Güçlendirici",
+      "path": "/bagisiklik-sistemi-guclendirici",
+      "product_count": 783
+    },
+    {
+      "name": "C Vitamini",
+      "path": "/c-vitamini",
+      "product_count": 150
+    },
+    {
+      "name": "D Vitamini",
+      "path": "/d-vitamini",
+      "product_count": 94
+    },
+    {
+      "name": "D3K2 Vitaminler",
+      "path": "/d3k2-vitaminler",
+      "product_count": 23
+    },
+    {
+      "name": "E Vitamini",
+      "path": "/e-vitamini",
+      "product_count": 27
+    },
+    {
+      "name": "K Vitamini",
+      "path": "/k-vitamini",
+      "product_count": 35
+    },
+    {
+      "name": "Kolajenler",
+      "path": "/kolajenler-1",
+      "product_count": 159
+    },
+    {
+      "name": "Mineraller",
+      "path": "/mineraller",
+      "product_count": 287
+    },
+    {
+      "name": "Multivitaminler",
+      "path": "/multivitaminler",
+      "product_count": 232
+    },
+    {
+      "name": "Çocuklar İçin Vitaminler",
+      "path": "/cocuklar-icin-vitaminler",
+      "product_count": 149
+    }
+  ],
+  "Besin Takviyeleri": [
+    {
+      "name": "Anti-Aging",
+      "path": "/anti-aging",
+      "product_count": 97
+    },
+    {
+      "name": "Balık Yağları",
+      "path": "/balik-yaglari",
+      "product_count": 136
+    },
+    {
+      "name": "Beta-glukan",
+      "path": "/beta-glukan",
+      "product_count": 27
+    },
+    {
+      "name": "Bigflor Probiyotik",
+      "path": "/bigflor-probiyotik",
+      "product_count": 4
+    },
+    {
+      "name": "Bitkisel İçerikli Ürünler",
+      "path": "/bitkisel-icerikli-urunler",
+      "product_count": 594
+    },
+    {
+      "name": "Bromelain",
+      "path": "/bromelain",
+      "product_count": 22
+    },
+    {
+      "name": "Eklem Sağlığı",
+      "path": "/eklem-sagligi",
+      "product_count": 164
+    },
+    {
+      "name": "Gaz Gidericiler",
+      "path": "/gaz-gidericiler-1",
+      "product_count": 3
+    },
+    {
+      "name": "Ginseng",
+      "path": "/ginseng",
+      "product_count": 15
+    },
+    {
+      "name": "Glukozamin",
+      "path": "/glukozamin",
+      "product_count": 15
+    },
+    {
+      "name": "Koenzimler",
+      "path": "/koenzimler",
+      "product_count": 56
+    },
+    {
+      "name": "Krill Yağları",
+      "path": "/krill-yaglari",
+      "product_count": 9
+    },
+    {
+      "name": "Omega3-Balık Yağları",
+      "path": "/omega3-balik-yaglari",
+      "product_count": 127
+    },
+    {
+      "name": "Probiyotikler",
+      "path": "/probiyotikler",
+      "product_count": 78
+    },
+    {
+      "name": "Propolis",
+      "path": "/propolis",
+      "product_count": 23
+    },
+    {
+      "name": "Quercetin",
+      "path": "/quercetin",
+      "product_count": 12
+    },
+    {
+      "name": "Sporcu Besinleri",
+      "path": "/sporcu-besinleri",
+      "product_count": 288
+    },
+    {
+      "name": "Spreyler ve Pastiller",
+      "path": "/spreyler-ve-pastiller",
+      "product_count": 27
+    },
+    {
+      "name": "Zayıflama",
+      "path": "/zayiflama",
+      "product_count": 55
+    },
+    {
+      "name": "Çinko",
+      "path": "/cinko",
+      "product_count": 38
+    },
+    {
+      "name": "Çocuklar İçin Besin Takviyesi",
+      "path": "/cocuklar-icin-besin-takviyesi",
+      "product_count": 128
+    },
+    {
+      "name": "Özel Gıda Takviyeleri",
+      "path": "/ozel-gida-takviyeleri",
+      "product_count": 668
+    }
+  ],
+  "Kişisel Bakım": [
+    {
+      "name": "Ağız Bakım Suları",
+      "path": "/agiz-bakim-sulari",
+      "product_count": 36
+    },
+    {
+      "name": "Diş Fırçaları ve Diş İpleri",
+      "path": "/dis-fircalari-ve-dis-ipleri",
+      "product_count": 83
+    },
+    {
+      "name": "Diş Macunu ve Diş Tabletleri",
+      "path": "/dis-macunu-ve-dis-tabletleri",
+      "product_count": 110
+    },
+    {
+      "name": "Doğal Ürünler",
+      "path": "/dogal-urunler",
+      "product_count": 48
+    },
+    {
+      "name": "El ve Ayak Bakımı",
+      "path": "/el-ve-ayak-bakimi",
+      "product_count": 12
+    },
+    {
+      "name": "Epilasyon",
+      "path": "/epilasyon",
+      "product_count": 7
+    },
+    {
+      "name": "Lens Solüsyonları",
+      "path": "/lens-solusyonlari",
+      "product_count": 5
+    }
+  ]
+}

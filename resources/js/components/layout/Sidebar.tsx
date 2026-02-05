@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, ShoppingBag, ShoppingCart, Settings, Users, LogOut, Loader2, FileText, CreditCard, Database } from 'lucide-react';
+import { LayoutDashboard, ShoppingBag, ShoppingCart, Settings, Users, LogOut, Loader2, FileText, CreditCard, Database, Package } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
@@ -14,6 +14,7 @@ const Sidebar = () => {
         { href: '/', label: 'Genel Bakis', icon: LayoutDashboard },
         { href: '/products', label: 'Urunler', icon: ShoppingBag },
         { href: '/bizimhesap-products', label: 'BizimHesap Urunler', icon: Database },
+        { href: '/kozvit-products', label: 'Kozvit Urunler', icon: Package },
         { href: '/orders', label: 'Siparisler', icon: ShoppingCart },
         { href: '/affiliates', label: 'Ortaklar', icon: Users },
         { href: '/invoices', label: 'Faturalar', icon: FileText },

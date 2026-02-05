@@ -1,13 +1,12 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\ProductController;
-use App\Http\Controllers\Api\AttributeController;
-use App\Http\Controllers\Api\VariationController;
-use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\AffiliateController;
+use App\Http\Controllers\Api\AttributeController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\VariationController;
+use Illuminate\Support\Facades\Route;
 
 // ==========================================
 // AUTH API
@@ -33,6 +32,26 @@ Route::prefix('products')->group(function () {
 
     // Batch Operations
     Route::put('/batch-stock', [ProductController::class, 'batchStock']);
+
+    // WooCommerce Direct Operations
+    Route::prefix('wc')->group(function () {
+        // Create products
+        Route::post('/simple', [ProductController::class, 'createSimple']);
+        Route::post('/variable', [ProductController::class, 'createVariable']);
+
+        // Get WooCommerce data
+        Route::get('/categories', [ProductController::class, 'getWcCategories']);
+        Route::get('/tags', [ProductController::class, 'getWcTags']);
+        Route::get('/attributes', [ProductController::class, 'getWcAttributes']);
+        Route::get('/{wcId}', [ProductController::class, 'getWcProduct']);
+        Route::delete('/{wcId}', [ProductController::class, 'deleteWcProduct']);
+
+        // Variations
+        Route::get('/{wcId}/variations', [ProductController::class, 'getVariations']);
+        Route::post('/{wcId}/variations', [ProductController::class, 'addVariation']);
+        Route::put('/{wcId}/variations/{variationId}', [ProductController::class, 'updateVariation']);
+        Route::delete('/{wcId}/variations/{variationId}', [ProductController::class, 'deleteVariation']);
+    });
 
     // Attributes
     Route::get('/attributes', [AttributeController::class, 'index']);
@@ -156,6 +175,25 @@ Route::prefix('bizimhesap-products')->group(function () {
     Route::post('/reset-failed', [BizimHesapProductController::class, 'resetFailed']);
     Route::get('/', [BizimHesapProductController::class, 'index']);
     Route::get('/{id}', [BizimHesapProductController::class, 'show']);
+});
+
+// ==========================================
+// KOZVIT PRODUCTS API
+// ==========================================
+use App\Http\Controllers\Api\KozvitProductController;
+
+Route::prefix('kozvit-products')->group(function () {
+    Route::get('/stats', [KozvitProductController::class, 'stats']);
+    Route::get('/brands', [KozvitProductController::class, 'brands']);
+    Route::get('/categories', [KozvitProductController::class, 'categories']);
+    Route::post('/push-batch', [KozvitProductController::class, 'pushBatch']);
+    Route::post('/push-all-pending', [KozvitProductController::class, 'pushAllPending']);
+    Route::post('/reset-failed', [KozvitProductController::class, 'resetFailed']);
+    Route::get('/', [KozvitProductController::class, 'index']);
+    Route::get('/{id}', [KozvitProductController::class, 'show']);
+    Route::put('/{id}', [KozvitProductController::class, 'update']);
+    Route::delete('/{id}', [KozvitProductController::class, 'destroy']);
+    Route::post('/{id}/push', [KozvitProductController::class, 'push']);
 });
 
 // ==========================================

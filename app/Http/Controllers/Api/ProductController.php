@@ -6,18 +6,391 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductResource;
 use App\Jobs\SyncProductsJob;
 use App\Models\Product;
+use App\Services\WooCommerce\ProductCreationService;
 use App\Services\WooCommerce\WooCommerceService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
-    protected WooCommerceService $woocommerce;
+    public function __construct(
+        protected WooCommerceService $woocommerce,
+        protected ProductCreationService $productCreation
+    ) {}
 
-    public function __construct(WooCommerceService $woocommerce)
+    /**
+     * WooCommerce'de basit ürün oluştur
+     */
+    public function createSimple(Request $request): JsonResponse
     {
-        $this->woocommerce = $woocommerce;
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'sku' => 'nullable|string|max:100',
+            'regular_price' => 'required|numeric|min:0',
+            'sale_price' => 'nullable|numeric|min:0',
+            'description' => 'nullable|string',
+            'short_description' => 'nullable|string',
+            'stock_quantity' => 'nullable|integer|min:0',
+            'status' => 'nullable|in:publish,draft,pending,private',
+            'categories' => 'nullable|array',
+            'categories.*' => 'integer',
+            'tags' => 'nullable|array',
+            'images' => 'nullable|array',
+            'images.*' => 'string|url',
+            'weight' => 'nullable|string',
+            'dimensions' => 'nullable|array',
+            'tax_class' => 'nullable|string',
+            'meta_data' => 'nullable|array',
+        ]);
+
+        try {
+            $result = $this->productCreation->createSimpleProduct($validated);
+
+            // Optionally save to local DB
+            if ($result && isset($result['id'])) {
+                $this->saveProductLocally($result);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Ürün başarıyla oluşturuldu',
+                'data' => $result,
+            ], 201);
+        } catch (\Exception $e) {
+            Log::error('Simple product creation failed', ['error' => $e->getMessage()]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Ürün oluşturulamadı: '.$e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * WooCommerce'de varyasyonlu ürün oluştur
+     */
+    public function createVariable(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'sku' => 'nullable|string|max:100',
+            'description' => 'nullable|string',
+            'short_description' => 'nullable|string',
+            'status' => 'nullable|in:publish,draft,pending,private',
+            'categories' => 'nullable|array',
+            'categories.*' => 'integer',
+            'tags' => 'nullable|array',
+            'images' => 'nullable|array',
+            'images.*' => 'string|url',
+            'weight' => 'nullable|string',
+            'tax_class' => 'nullable|string',
+            'attributes' => 'nullable|array',
+            'variations' => 'required|array|min:1',
+            'variations.*.attributes' => 'required|array|min:1',
+            'variations.*.regular_price' => 'required|numeric|min:0',
+            'variations.*.sale_price' => 'nullable|numeric|min:0',
+            'variations.*.sku' => 'nullable|string|max:100',
+            'variations.*.stock_quantity' => 'nullable|integer|min:0',
+            'variations.*.image' => 'nullable|string|url',
+            'variations.*.weight' => 'nullable|string',
+        ]);
+
+        try {
+            $result = $this->productCreation->createVariableProduct($validated);
+
+            // Optionally save to local DB
+            if ($result && isset($result['id'])) {
+                $this->saveProductLocally($result);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Varyasyonlu ürün başarıyla oluşturuldu',
+                'data' => $result,
+            ], 201);
+        } catch (\Exception $e) {
+            Log::error('Variable product creation failed', ['error' => $e->getMessage()]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Ürün oluşturulamadı: '.$e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Mevcut ürüne varyasyon ekle
+     */
+    public function addVariation(Request $request, int $wcId): JsonResponse
+    {
+        $validated = $request->validate([
+            'attributes' => 'required|array|min:1',
+            'regular_price' => 'required|numeric|min:0',
+            'sale_price' => 'nullable|numeric|min:0',
+            'sku' => 'nullable|string|max:100',
+            'stock_quantity' => 'nullable|integer|min:0',
+            'image' => 'nullable|string|url',
+            'weight' => 'nullable|string',
+            'status' => 'nullable|in:publish,private',
+        ]);
+
+        try {
+            $result = $this->productCreation->addVariation($wcId, $validated);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Varyasyon başarıyla eklendi',
+                'data' => $result,
+            ], 201);
+        } catch (\Exception $e) {
+            Log::error('Add variation failed', ['wc_id' => $wcId, 'error' => $e->getMessage()]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Varyasyon eklenemedi: '.$e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Varyasyon güncelle
+     */
+    public function updateVariation(Request $request, int $wcId, int $variationId): JsonResponse
+    {
+        $validated = $request->validate([
+            'regular_price' => 'sometimes|numeric|min:0',
+            'sale_price' => 'nullable|numeric|min:0',
+            'sku' => 'nullable|string|max:100',
+            'stock_quantity' => 'nullable|integer|min:0',
+            'image' => 'nullable|string|url',
+            'weight' => 'nullable|string',
+            'status' => 'nullable|in:publish,private',
+        ]);
+
+        try {
+            $result = $this->productCreation->updateVariation($wcId, $variationId, $validated);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Varyasyon başarıyla güncellendi',
+                'data' => $result,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Update variation failed', [
+                'wc_id' => $wcId,
+                'variation_id' => $variationId,
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Varyasyon güncellenemedi: '.$e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Ürünün varyasyonlarını getir
+     */
+    public function getVariations(int $wcId): JsonResponse
+    {
+        try {
+            $variations = $this->woocommerce->getVariations($wcId);
+
+            return response()->json([
+                'success' => true,
+                'data' => $variations,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Varyasyonlar alınamadı: '.$e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Varyasyon sil
+     */
+    public function deleteVariation(int $wcId, int $variationId): JsonResponse
+    {
+        try {
+            $result = $this->woocommerce->deleteVariation($wcId, $variationId, true);
+
+            if ($result) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Varyasyon başarıyla silindi',
+                ]);
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Varyasyon silinemedi',
+            ], 500);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Varyasyon silinemedi: '.$e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * WooCommerce kategorilerini getir
+     */
+    public function getWcCategories(): JsonResponse
+    {
+        try {
+            $categories = $this->woocommerce->getCategories(1, 100);
+
+            return response()->json([
+                'success' => true,
+                'data' => $categories,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Kategoriler alınamadı: '.$e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * WooCommerce özelliklerini (attributes) getir
+     */
+    public function getWcAttributes(): JsonResponse
+    {
+        try {
+            $attributes = $this->woocommerce->getAttributes();
+
+            return response()->json([
+                'success' => true,
+                'data' => $attributes,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Özellikler alınamadı: '.$e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * WooCommerce etiketlerini getir
+     */
+    public function getWcTags(): JsonResponse
+    {
+        try {
+            $tags = $this->woocommerce->getTags();
+
+            return response()->json([
+                'success' => true,
+                'data' => $tags,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Etiketler alınamadı: '.$e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * WooCommerce ürünü direkt getir (API'den)
+     */
+    public function getWcProduct(int $wcId): JsonResponse
+    {
+        try {
+            $product = $this->woocommerce->getProductRaw($wcId);
+
+            if (! $product) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Ürün bulunamadı',
+                ], 404);
+            }
+
+            // Get variations if variable
+            if ($product['type'] === 'variable') {
+                $product['variations_data'] = $this->woocommerce->getVariations($wcId);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => $product,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ürün alınamadı: '.$e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * WooCommerce'den ürün sil
+     */
+    public function deleteWcProduct(int $wcId): JsonResponse
+    {
+        try {
+            $result = $this->woocommerce->deleteProduct($wcId, true);
+
+            if ($result) {
+                // Remove from local DB if exists
+                Product::where('commerce_id', $wcId)->delete();
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Ürün başarıyla silindi',
+                ]);
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Ürün silinemedi',
+            ], 500);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ürün silinemedi: '.$e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Save WooCommerce product to local database
+     */
+    protected function saveProductLocally(array $wcProduct): void
+    {
+        try {
+            Product::updateOrCreate(
+                ['commerce_id' => $wcProduct['id']],
+                [
+                    'name' => $wcProduct['name'],
+                    'slug' => $wcProduct['slug'] ?? null,
+                    'sku' => $wcProduct['sku'] ?? null,
+                    'type' => $wcProduct['type'] ?? 'simple',
+                    'status' => $wcProduct['status'] ?? 'draft',
+                    'price' => $wcProduct['price'] ?? 0,
+                    'regular_price' => $wcProduct['regular_price'] ?? 0,
+                    'sale_price' => $wcProduct['sale_price'] ?? null,
+                    'on_sale' => $wcProduct['on_sale'] ?? false,
+                    'stock' => $wcProduct['stock_quantity'] ?? 0,
+                    'stock_status' => $wcProduct['stock_status'] ?? 'instock',
+                    'manage_stock' => $wcProduct['manage_stock'] ?? false,
+                    'description' => $wcProduct['description'] ?? null,
+                    'short_description' => $wcProduct['short_description'] ?? null,
+                ]
+            );
+        } catch (\Exception $e) {
+            Log::warning('Failed to save product locally', [
+                'wc_id' => $wcProduct['id'],
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -37,7 +410,7 @@ class ProductController extends Controller
 
         // Kategori filtresi
         if ($categoryId = $request->get('category_id')) {
-            $query->whereHas('categories', fn($q) => $q->where('categories.id', $categoryId));
+            $query->whereHas('categories', fn ($q) => $q->where('categories.id', $categoryId));
         }
 
         // Durum filtresi
@@ -98,14 +471,18 @@ class ProductController extends Controller
         if ($product->commerce_id) {
             $wcData = [];
 
-            if (isset($validated['name']))
+            if (isset($validated['name'])) {
                 $wcData['name'] = $validated['name'];
-            if (isset($validated['description']))
+            }
+            if (isset($validated['description'])) {
                 $wcData['description'] = $validated['description'];
-            if (isset($validated['short_description']))
+            }
+            if (isset($validated['short_description'])) {
                 $wcData['short_description'] = $validated['short_description'];
-            if (isset($validated['regular_price']))
+            }
+            if (isset($validated['regular_price'])) {
                 $wcData['regular_price'] = (string) $validated['regular_price'];
+            }
             if (array_key_exists('sale_price', $validated)) {
                 $wcData['sale_price'] = $validated['sale_price'] ? (string) $validated['sale_price'] : '';
             }
@@ -113,24 +490,31 @@ class ProductController extends Controller
                 $wcData['stock_quantity'] = $validated['stock'];
                 $wcData['manage_stock'] = true;
             }
-            if (isset($validated['manage_stock']))
+            if (isset($validated['manage_stock'])) {
                 $wcData['manage_stock'] = $validated['manage_stock'];
-            if (isset($validated['stock_status']))
+            }
+            if (isset($validated['stock_status'])) {
                 $wcData['stock_status'] = $validated['stock_status'];
-            if (isset($validated['status']))
+            }
+            if (isset($validated['status'])) {
                 $wcData['status'] = $validated['status'];
-            if (isset($validated['featured']))
+            }
+            if (isset($validated['featured'])) {
                 $wcData['featured'] = $validated['featured'];
-            if (isset($validated['catalog_visibility']))
+            }
+            if (isset($validated['catalog_visibility'])) {
                 $wcData['catalog_visibility'] = $validated['catalog_visibility'];
-            if (isset($validated['weight']))
+            }
+            if (isset($validated['weight'])) {
                 $wcData['weight'] = $validated['weight'];
-            if (isset($validated['sku']))
+            }
+            if (isset($validated['sku'])) {
                 $wcData['sku'] = $validated['sku'];
+            }
 
             $wcResult = $this->woocommerce->updateProduct((int) $product->commerce_id, $wcData);
 
-            if (!$wcResult) {
+            if (! $wcResult) {
                 return response()->json([
                     'success' => false,
                     'message' => 'WooCommerce güncelleme başarısız',
@@ -162,7 +546,7 @@ class ProductController extends Controller
             'sale_price' => 'nullable|numeric|min:0',
         ]);
 
-        if (!$product->commerce_id) {
+        if (! $product->commerce_id) {
             return response()->json([
                 'success' => false,
                 'message' => 'Ürün WooCommerce ile senkronize değil',
@@ -175,7 +559,7 @@ class ProductController extends Controller
             $validated['sale_price'] ?? null
         );
 
-        if (!$wcResult) {
+        if (! $wcResult) {
             return response()->json([
                 'success' => false,
                 'message' => 'WooCommerce fiyat güncelleme başarısız',
@@ -187,7 +571,7 @@ class ProductController extends Controller
             'regular_price' => $validated['regular_price'],
             'sale_price' => $validated['sale_price'] ?? null,
             'price' => $validated['sale_price'] ?? $validated['regular_price'],
-            'on_sale' => !empty($validated['sale_price']),
+            'on_sale' => ! empty($validated['sale_price']),
         ]);
 
         return response()->json([
@@ -214,7 +598,7 @@ class ProductController extends Controller
             'stock_status' => 'nullable|in:instock,outofstock,onbackorder',
         ]);
 
-        if (!$product->commerce_id) {
+        if (! $product->commerce_id) {
             return response()->json([
                 'success' => false,
                 'message' => 'Ürün WooCommerce ile senkronize değil',
@@ -226,7 +610,7 @@ class ProductController extends Controller
             $validated['stock']
         );
 
-        if (!$wcResult) {
+        if (! $wcResult) {
             return response()->json([
                 'success' => false,
                 'message' => 'WooCommerce stok güncelleme başarısız',
@@ -306,7 +690,7 @@ class ProductController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => count($localUpdates) . ' ürün stoğu güncellendi',
+            'message' => count($localUpdates).' ürün stoğu güncellendi',
         ]);
     }
 
@@ -328,10 +712,11 @@ class ProductController extends Controller
                 'success' => true,
                 'message' => "Ürün senkronizasyonu tamamlandı. {$count} ürün mevcut.",
                 'status' => 'completed',
-                'product_count' => $count
+                'product_count' => $count,
             ]);
         } catch (\Exception $e) {
-            Log::error('Error in SyncProductsJob: ' . $e->getMessage());
+            Log::error('Error in SyncProductsJob: '.$e->getMessage());
+
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage(),
@@ -385,7 +770,7 @@ class ProductController extends Controller
             ], 400);
         }
 
-        if (!$product->commerce_id) {
+        if (! $product->commerce_id) {
             return response()->json([
                 'success' => false,
                 'message' => 'Ürün WooCommerce ile senkronize değil',
@@ -397,7 +782,7 @@ class ProductController extends Controller
             'type' => 'variable',
         ]);
 
-        if (!$wcResult) {
+        if (! $wcResult) {
             return response()->json([
                 'success' => false,
                 'message' => 'WooCommerce güncelleme başarısız',

@@ -9,6 +9,7 @@ import Login from '@/pages/Login';
 import Catalog from '@/pages/Catalog';
 import ProductDetailPage from '@/pages/ProductDetail';
 import ProductEditPage from '@/pages/ProductEdit';
+import CreateProduct from '@/pages/CreateProduct';
 
 import Orders from '@/pages/Orders';
 import OrderDetail from '@/pages/OrderDetail';
@@ -21,6 +22,9 @@ import Payments from '@/pages/Payments';
 
 import BizimHesapProducts from '@/pages/BizimHesapProducts';
 import BizimHesapProductDetail from '@/pages/BizimHesapProductDetail';
+
+import KozvitProducts from '@/pages/KozvitProducts';
+import KozvitProductDetail from '@/pages/KozvitProductDetail';
 
 import Settings from '@/pages/Settings';
 import { Toaster } from '@/components/ui/toaster';
@@ -41,6 +45,7 @@ function App() {
                     >
                         <Route index element={<Dashboard />} />
                         <Route path="products" element={<Catalog />} />
+                        <Route path="products/create" element={<CreateProduct />} />
                         <Route path="products/:id" element={<ProductDetailPage />} />
                         <Route path="products/:id/edit" element={<ProductEditPage />} />
                         <Route path="orders" element={<Orders />} />
@@ -51,6 +56,8 @@ function App() {
                         <Route path="payments" element={<Payments />} />
                         <Route path="bizimhesap-products" element={<BizimHesapProducts />} />
                         <Route path="bizimhesap-products/:id" element={<BizimHesapProductDetail />} />
+                        <Route path="kozvit-products" element={<KozvitProducts />} />
+                        <Route path="kozvit-products/:id" element={<KozvitProductDetail />} />
                         <Route path="settings" element={<Settings />} />
                     </Route>
                 </Routes>

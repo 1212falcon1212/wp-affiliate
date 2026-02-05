@@ -45,7 +45,9 @@ import {
     CreditCard,
     Calendar,
     Percent,
-    Hash
+    Hash,
+    Landmark,
+    Save
 } from "lucide-react";
 
 interface Coupon {
@@ -79,6 +81,12 @@ interface Referral {
     };
 }
 
+interface BankDetails {
+    iban: string;
+    account_holder: string;
+    bank_name: string;
+}
+
 interface Affiliate {
     id: number;
     name: string;
@@ -89,7 +97,7 @@ interface Affiliate {
     commission_rate: number;
     commission_type: string;
     payment_method: string;
-    payment_details: any;
+    payment_details: BankDetails | null;
     total_earnings: number;
     pending_balance: number;
     paid_balance: number;
@@ -145,6 +153,14 @@ const AffiliateDetail = () => {
     const [confirmingReferral, setConfirmingReferral] = useState<number | null>(null);
     const [markingAsPaid, setMarkingAsPaid] = useState(false);
 
+    // Bank details state
+    const [bankForm, setBankForm] = useState<BankDetails>({
+        iban: '',
+        account_holder: '',
+        bank_name: '',
+    });
+    const [savingBank, setSavingBank] = useState(false);
+
     // Edit form
     const [editForm, setEditForm] = useState({
         name: '',
@@ -189,6 +205,12 @@ const AffiliateDetail = () => {
                     payment_method: data.data.payment_method || 'bank_transfer',
                     status: data.data.status || 'active',
                     notes: data.data.notes || '',
+                });
+                // Initialize bank form
+                setBankForm({
+                    iban: data.data.payment_details?.iban || '',
+                    account_holder: data.data.payment_details?.account_holder || '',
+                    bank_name: data.data.payment_details?.bank_name || '',
                 });
             }
         } catch (error) {
@@ -403,6 +425,44 @@ const AffiliateDetail = () => {
         } finally {
             setMarkingAsPaid(false);
         }
+    };
+
+    const handleSaveBankDetails = async () => {
+        setSavingBank(true);
+        try {
+            const response = await fetch(`/api/affiliates/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    payment_details: {
+                        iban: bankForm.iban,
+                        account_holder: bankForm.account_holder,
+                        bank_name: bankForm.bank_name,
+                    },
+                }),
+            });
+
+            if (response.ok) {
+                alert('Banka bilgileri kaydedildi!');
+                fetchAffiliate();
+            } else {
+                const error = await response.json();
+                alert(error.message || 'Kaydetme hatasi');
+            }
+        } catch (error) {
+            console.error('Banka bilgileri kaydetme hatasi:', error);
+            alert('Kaydetme hatasi');
+        } finally {
+            setSavingBank(false);
+        }
+    };
+
+    const formatIban = (value: string): string => {
+        // Remove all non-alphanumeric characters
+        const cleaned = value.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+        // Format as IBAN (groups of 4)
+        const groups = cleaned.match(/.{1,4}/g);
+        return groups ? groups.join(' ') : cleaned;
     };
 
     const resetCouponForm = () => {
@@ -691,6 +751,7 @@ const AffiliateDetail = () => {
                     <TabsTrigger value="overview">Genel Bilgi</TabsTrigger>
                     <TabsTrigger value="coupons">Kuponlar ({affiliate.coupons?.length || 0})</TabsTrigger>
                     <TabsTrigger value="referrals">Referrallar ({referrals.length})</TabsTrigger>
+                    <TabsTrigger value="bank">Banka Bilgileri</TabsTrigger>
                 </TabsList>
 
                 {/* Overview Tab */}
@@ -767,6 +828,40 @@ const AffiliateDetail = () => {
                             </CardContent>
                         </Card>
                     </div>
+
+                    {/* Bank Details Summary */}
+                    {affiliate.payment_details && (affiliate.payment_details.iban || affiliate.payment_details.bank_name) && (
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2">
+                                    <Landmark className="h-5 w-5" />
+                                    Banka Bilgileri
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    {affiliate.payment_details.bank_name && (
+                                        <div>
+                                            <p className="text-sm text-muted-foreground">Banka</p>
+                                            <p className="font-medium">{affiliate.payment_details.bank_name}</p>
+                                        </div>
+                                    )}
+                                    {affiliate.payment_details.account_holder && (
+                                        <div>
+                                            <p className="text-sm text-muted-foreground">Hesap Sahibi</p>
+                                            <p className="font-medium">{affiliate.payment_details.account_holder}</p>
+                                        </div>
+                                    )}
+                                    {affiliate.payment_details.iban && (
+                                        <div>
+                                            <p className="text-sm text-muted-foreground">IBAN</p>
+                                            <p className="font-mono text-sm">{affiliate.payment_details.iban}</p>
+                                        </div>
+                                    )}
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
 
                     {affiliate.notes && (
                         <Card>
@@ -1075,6 +1170,113 @@ const AffiliateDetail = () => {
                             </table>
                         </div>
                     )}
+                </TabsContent>
+
+                {/* Bank Details Tab */}
+                <TabsContent value="bank" className="space-y-6">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <Landmark className="h-5 w-5" />
+                                Banka Bilgileri
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-2">
+                                    <Label htmlFor="iban">IBAN</Label>
+                                    <Input
+                                        id="iban"
+                                        value={bankForm.iban}
+                                        onChange={(e) => setBankForm({ ...bankForm, iban: formatIban(e.target.value) })}
+                                        placeholder="TR00 0000 0000 0000 0000 0000 00"
+                                        maxLength={32}
+                                    />
+                                    <p className="text-xs text-muted-foreground">
+                                        Turkiye IBAN'i TR ile baslar ve 26 karakter uzunlugundadir
+                                    </p>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="bank_name">Banka</Label>
+                                    <Select
+                                        value={bankForm.bank_name}
+                                        onValueChange={(value) => setBankForm({ ...bankForm, bank_name: value })}
+                                    >
+                                        <SelectTrigger id="bank_name">
+                                            <SelectValue placeholder="Banka seciniz" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="Ziraat Bankasi">Ziraat Bankasi</SelectItem>
+                                            <SelectItem value="Is Bankasi">Is Bankasi</SelectItem>
+                                            <SelectItem value="Garanti BBVA">Garanti BBVA</SelectItem>
+                                            <SelectItem value="Akbank">Akbank</SelectItem>
+                                            <SelectItem value="Yapi Kredi">Yapi Kredi</SelectItem>
+                                            <SelectItem value="Halkbank">Halkbank</SelectItem>
+                                            <SelectItem value="Vakifbank">Vakifbank</SelectItem>
+                                            <SelectItem value="QNB Finansbank">QNB Finansbank</SelectItem>
+                                            <SelectItem value="Denizbank">Denizbank</SelectItem>
+                                            <SelectItem value="TEB">TEB</SelectItem>
+                                            <SelectItem value="ING Bank">ING Bank</SelectItem>
+                                            <SelectItem value="HSBC">HSBC</SelectItem>
+                                            <SelectItem value="Enpara">Enpara</SelectItem>
+                                            <SelectItem value="Papara">Papara</SelectItem>
+                                            <SelectItem value="Diger">Diger</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="account_holder">Hesap Sahibi (Isim Soyisim)</Label>
+                                <Input
+                                    id="account_holder"
+                                    value={bankForm.account_holder}
+                                    onChange={(e) => setBankForm({ ...bankForm, account_holder: e.target.value.toUpperCase() })}
+                                    placeholder="AD SOYAD"
+                                />
+                                <p className="text-xs text-muted-foreground">
+                                    Hesap sahibinin tam adi (banka kaydindaki sekliyle)
+                                </p>
+                            </div>
+
+                            <div className="border-t pt-6">
+                                <Button
+                                    onClick={handleSaveBankDetails}
+                                    disabled={savingBank}
+                                    className="w-full sm:w-auto"
+                                >
+                                    {savingBank ? (
+                                        <>
+                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                            Kaydediliyor...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Save className="mr-2 h-4 w-4" />
+                                            Banka Bilgilerini Kaydet
+                                        </>
+                                    )}
+                                </Button>
+                            </div>
+
+                            {/* Preview */}
+                            {(bankForm.iban || bankForm.account_holder || bankForm.bank_name) && (
+                                <div className="border-t pt-6">
+                                    <h4 className="text-sm font-medium text-muted-foreground mb-3">Onizleme</h4>
+                                    <div className="bg-muted/50 rounded-lg p-4 space-y-2">
+                                        {bankForm.bank_name && (
+                                            <p className="font-medium">{bankForm.bank_name}</p>
+                                        )}
+                                        {bankForm.account_holder && (
+                                            <p className="text-sm">{bankForm.account_holder}</p>
+                                        )}
+                                        {bankForm.iban && (
+                                            <p className="font-mono text-sm">{bankForm.iban}</p>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
                 </TabsContent>
             </Tabs>
         </div>
